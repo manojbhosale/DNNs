@@ -1,0 +1,78 @@
+Metric Path planning requires
+    1. Representation of world space. 
+        Graph/road map construction
+        Regular grids /Cell decomposition/potential fields
+    2. Algorithm which can operate over representation to produce optical path
+
+Metric methods ignore issues of 
+    how to execute planned path
+    impact of sensor noise or uncertainty, localization
+    
+Algorithms:
+    A* for relational graphs
+        f*(n) = g*(n) + h*(n) // ‘*’ means these are estimates
+        where:
+        • f*(n) is the “goodness” of the path from Start to n
+        • g*(n) is the “cost” of going from the Start to node n
+        • h*(n) is the cost of going from n to the Goal
+    
+        *Can be used with any Cspace representation that can be transformed into a graph.
+    
+    D* 
+     
+        D*: initially plans path to goal just like A*, but plans a path from every
+        position to the goal in advance
+        – I.e., rather than “single source shortest path” (Dijkstra’s algorithm),
+        • Solve “all pairs shortest path” (e.g., Floyd-Warshall algorithm)
+        
+        In D*, the estimated distance, h*, is based on traversability. Then, D* continuously replans, by updating map with newly sensed
+information
+    
+    Wavefront for operating directly on regular grids.
+        Used in cellular decomposition methods/ grid representations.
+        It can handle different terrains.
+     General idea: consider Cspace to be conductive material with heat
+radiating out from initial node to goal node
+• If there is a path, heat will eventually reach goal node
+• Nice side effect: optimal path from all grid elements to the goal can be
+computed
+• Result: map that looks like a potential field
+         
+         
+######Obstacle avoidance
+Bug2:
+    Pros:
+    Simple
+    Easy to understand
+    Popularly used
+    • Cons:
+    Does not take into account robot kinematics
+    Since it only uses most recent sensor values, it can be negatively
+    impacted by noise
+    • More complex algorithms (in the following) attempt to overcome these
+    shortcomings
+
+Vector Field Histogram (VFH)
+
+Overcomes Bug2’s limitation of only using most recent sensor data by
+creating local map of the environment around the robot
+• Local map is a small occupancy grid
+• This grid is populated only by relatively recent sensor data
+• Grid cell values are equivalent to the probability that there is an
+obstacle in that cell     
+
+
+Vector Field Histogram + (VFH+)
+Accounts also in a very simplified way
+for the moving trajectories
+ robot can move on arcs
+ arcs take into account kinematics
+ obstacles blocking a given direction
+also block all the trajectories
+(arcs) going through this direction
+
+Limitations:
+ Can be problematic if narrow areas (e.g. doors) have to be passed
+ Local minima might not be avoided
+ Reaching the goal cannot be guaranteed
+ Dynamics of the robot not really considered
