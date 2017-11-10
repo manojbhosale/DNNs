@@ -1,0 +1,147 @@
+reason and adopt
+
+AI : ML is branch of AI
+Req for ML is you need to have data. 
+AI	may not need data initially but can learn on the go.
+Deep Learning: Apply NN to Ml problem. Its part of ML
+
+AI and ML is not the same.
+
+
+Louis Dorard
+
+Applying the linear regression to the classification  problem is not great idea. A the classifcication would vary with addition of new data.
+Logistic regressopn:
+	Uses sigmoid function
+	Logistic fucntion is classificaiton algorithm but sounds as regression as its derived from the regression algorithm.
+	The answers will vary between 0 and 1 because of sigmoid function.
+	LogisticRegression = sigmoid(linear regression)
+	Multicalss LR:
+		SKlearn create multiple linear regresion lines internally to tackle multiclass problem.
+	LR regression draws only straight line
+	If straight line does not solve the problem then use another algorithm.
+	scikit needs the numerical values instead of the categorical data.
+
+Naive bayes classifier:
+	Contineous: GaussianNB
+	Discrete: multiNomialNB
+	Binary: BernoulliNB
+	For text data analysis, sentiment analysis.
+	text is converted to nubers and vectors are given to the classifier.
+	
+Decision tree classifier:
+	Which attrbute need to use/split(so that the information gain is max) is decided by machine
+	Splitting criteria
+		Entropy
+			Entropy is highest when situation is dicy(prob of 0.5). If prob is 0 or 1 then the entropy is 0.
+		Gini index
+		Miscalculation rate
+	Accuracy of the classifier is 1.0 some times as it has tendency to overfit.
+	Max depth needs to be tuned to prun/cut the tree. Need to change th default None.
+	Problematic when the data size is very big as it goes through data one by one.
+	Data size is overcome with random forest:
+			Chop the data randomly row wise and design multiple decision trees.
+	
+Support vector machine:
+	Called as large margin classifer as it always tries to find the way to maximize the margin.
+	kernel SVMs are used to classify the non linear seperable.
+	Transforms
+	Kernal : linear(for linear) or RBF( for non linear)
+
+K-NN classifier:
+	Distance measurees:
+		Eucledian
+		Manhattan
+		Minkowski
+	Using value of K is skill. We can not play with and decide.
+	
+Use pipelines:
+	Scaling(make data comparable)
+	Dimentionality reductions/ Feature Engineering
+	learning Algorithm
+	Predictive model
+	
+	pipeline.fit - iterations of fit and transform
+	pipeline.predict -
+
+
+Cross validation techniquess:
+		data shouled be split as training , validation and test
+		Why?
+		All easy samples may gather in test data. which make test accuracy as 99 pecent but it may not represent actual data.
+		So use K-fold cross validation. Usually 10 is used as value of K. Also called as hold out method. Here data is split as Train and Test		
+		Accuracy is falsy term. Use precision and recall. Exaple of fraud detectionm where negative dataset is very small.
+		
+Unsuprevised learning:
+		Use in anamoly detection
+		Dimentionality reduction
+		Clustering
+	K-means clustering:
+		Throws #seedpoints  as much clusters we want.
+		Classify  the points accrding to the distance
+		Shift the seed to the mean
+		Repeat
+		Means do not move as algorithm is converged.
+		Labels are given by the users afterwords.
+		Accuray is diificult to measure. 
+			Calculate within cluster Sum squared error. Distotion should be small. 
+		#clusters are decided by domain expert
+		k means ++ <- converge is fast as we can specify where to throw the seed.
+		plot #clusters vs Distortion <- and use right hand elbow rule
+		Silhoutte method <- if the elbow is flat
+	Bottom up approach:
+		hierarchial clustering
+	PCA:
+		used for dimentionalty reduction
+		If memory is less we need to compress the data wihtout loosing imp information
+		2D data to 1D data<- only z axis value is enough instead of x and Y. 
+		Minute details might be lost.
+		PC1 and Pc2: PC2 saves height. PC1 principal component.
+		Only one PC1 as enough as Pc2 values are almost same.
+		3D -> 2D -> 1D
+		Mathematically one can come from ND to 1D
+		At every step we have data loss
+		Advantage is visualization. Eg 20 dimentional data.
+		People apply PCA and choose the features out of 20(called as feature extraction)
+		
+	Anamoly detection/One class classifier:
+		Eg. key stroke dynamisc/soft biometrics for password protection.
+		Only right answeres are availale.
+		Variation other than intraclass variations is detected
+		Gaussian kernels/ Gaussian hat:
+		One Class SVM
+	
+Learning with ensembles:
+	Money lies with better accurate algorithm
+	How 59 people beat Amazon
+	Super classifier:
+		Some advantages of Logistic regression - simplicity, linear
+		Naive bayes - orks with linear and needs number
+		decision tree- tendency to overfit data is Advantage
+		SVM - non linear classifier
+		KNN - simplest
+	No gurantee that majority voote will give better results
+	To overcome go for weighted majority vote classifier.
+	Algorithm which performs in taining stage give more weightage.
+	Stacking / Stack generalization <- machine will decide the weight of the classifier by adding classifier layer on the results of first Classifier laeyer
+	Bagging:
+		Done on overftting classifier(like decision tree)
+		Same as in random forest
+		Used when u want to reduce the variance whle retaining the bias
+		Not recommned for wak/high bias classifier. ( bias means underfit)
+		parellel execution is possible.		
+	Boosting:
+		Used for wek classifier to do good. Eg. Logistic regression
+		In iterative manner use weak classifer(high bias) to improve performance.
+		Its sequential manner(unlike bagging)
+		SG boost
+		AdaBoost
+	
+Reenforcement learning
+	Environment is not constant
+	Agents <- maximize rewards, minimize damage
+		
+		
+		
+	
+	
