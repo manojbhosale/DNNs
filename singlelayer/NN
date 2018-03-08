@@ -1,0 +1,120 @@
+train = pd.read_csv('train.csv')
+test = pd.read_csv('test.csv')
+
+full_data  = [train,test]
+PassengerId = test['PassengerId']
+
+train.head()
+
+
+#transform the data
+
+import tensorflow as tf
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+import seaborn as sns
+from math import floor, ceil
+from pylab import rcParams
+
+
+fareOh = pd.get_dummies(train['Fare'],prefix='fare') #gte one hot with dummies
+embOh = pd.get_dummies(train['Embarked'],prefix='embar') #gte one hot with dummies
+pclassOh = pd.get_dummies(train['Pclass'],prefix='pclass')
+sexOh = pd.get_dummies(train['Sex'],prefix='sex')
+ageOh = pd.get_dummies(train['Age'],prefix='age')
+parchOh = pd.get_dummies(train['Parch'],prefix='parch')
+cabinOh = pd.get_dummies(train['Has_Cabin'],prefix='cabin')
+aloneOh = pd.get_dummies(train['IsAlone'],prefix='isalone')
+titleOh = pd.get_dummies(train['Title'],prefix='title')
+
+train_x = pd.concat([train,fareOh,embOh,pclassOh,sexOh,ageOh,parchOh,cabinOh,aloneOh,titleOh],axis=1) # axis is important otherwise NaNs are dislpayed
+
+train_y = pd.get_dummies(train['Survived'],prefix='survive')
+
+#splitting data
+thr= 0.9
+numTrains = floor(train.shape[0] * thr)
+x_train = train_x.iloc[0:numTrains].values
+y_train = train_y.iloc[0:numTrains].values
+x_test = train_x.iloc[numTrains:].values
+y_test = train_y.iloc[numTrains:].values
+
+#titleOh.shape
+
+
+#train_x.shape
+#x_train.head()
+
+
+
+def multilayer_perceptron(x, weights, biases, keep_prob):
+    layer_1 = tf.add(tf.matmul(x, weights['h1']), biases['b1'])
+    layer_1 = tf.nn.relu(layer_1)
+    layer_1 = tf.nn.dropout(layer_1, keep_prob)
+    out_layer = tf.matmul(layer_1, weights['out']) + biases['out']
+    return out_layer
+n_hidden_1 = 20
+n_input = train_x.shape[1]
+n_classes = train_y.shape[1]
+
+weights = {
+    'h1': tf.Variable(tf.random_normal([n_input, n_hidden_1])),
+    'out': tf.Variable(tf.random_normal([n_hidden_1, n_classes]))
+}
+
+biases = {
+    'b1': tf.Variable(tf.random_normal([n_hidden_1])),
+    'out': tf.Variable(tf.random_normal([n_classes]))
+}
+
+keep_prob = tf.placeholder("float")
+
+training_epochs = 5000
+display_step = 1000
+batch_size = 32
+
+x = tf.placeholder("float", [None, n_input])
+y = tf.placeholder("float", [None, n_classes])
+
+predictions = multilayer_perceptron(x, weights, biases, keep_prob)
+
+cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=predictions, labels=y))
+optimizer = tf.train.AdamOptimizer(learning_rate=0.0001).minimize(cost)
+
+
+fareOh = pd.get_dummies(test['Fare'],prefix='fare') #gte one hot with dummies
+embOh = pd.get_dummies(test['Embarked'],prefix='embar') #gte one hot with dummies
+pclassOh = pd.get_dummies(test['Pclass'],prefix='pclass')
+sexOh = pd.get_dummies(test['Sex'],prefix='sex')
+ageOh = pd.get_dummies(test['Age'],prefix='age')
+parchOh = pd.get_dummies(test['Parch'],prefix='parch')
+cabinOh = pd.get_dummies(test['Has_Cabin'],prefix='cabin')
+aloneOh = pd.get_dummies(test['IsAlone'],prefix='isalone')
+titleOh = pd.get_dummies(test['Title'],prefix='title')
+
+with tf.Session() as sess:
+    sess.run(tf.global_variables_initializer())
+    
+    for epoch in range(training_epochs):
+        avg_cost = 0.0
+        total_batch = int(len(x_train) / batch_size)
+        x_batches = np.array_split(x_train, total_batch)
+        y_batches = np.array_split(y_train, total_batch)
+        for i in range(total_batch):
+            batch_x, batch_y = x_batches[i], y_batches[i]
+            _, c = sess.run([optimizer, cost], 
+                            feed_dict={
+                                x: batch_x, 
+                                y: batch_y, 
+                                keep_prob: 0.8
+                            })
+            avg_cost += c / total_batch
+        if epoch % display_step == 0:
+            print("Epoch:", '%04d' % (epoch+1), "cost=", \
+                "{:.9f}".format(avg_cost))
+    print("Optimization Finished!")
+    correct_prediction = tf.equal(tf.argmax(predictions, 1), tf.argmax(y, 1))
+    accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
+    #print(sess.run(accuracy))
+    print("Accuracy:", accuracy.eval({x: x_test, y: y_test, keep_prob: 1.0}))
